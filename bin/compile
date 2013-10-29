@@ -27,6 +27,7 @@ function download_url() {
 
 BUILD_DIR="$1"
 CACHE_DIR="$2"
+BIN_DIR=$(dirname $0)
 
 ## PHP
 PHP_VERSION=5.4.17
@@ -48,7 +49,7 @@ then
 else
         echo "Bundling PHP v${PHP_VERSION}" | indent
         echo ${PHP_URL} | indent
-        download_url ${PHP_URL}
+        curl -s -S -o ${PHP_FILE} -L -m 300 --connect-timeout 60 ${PHP_URL}
 fi
 
 mkdir -p ${BUILD_DIR}/vendor/php
