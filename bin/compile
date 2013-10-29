@@ -38,22 +38,16 @@ PHP_URL="http://$PHP_REGION.php.net/get/$PHP_FILE/from/$PHP_REGION.php.net/mirro
 echo "-----> Installing PHP version $PHP_VERSION"
 if [ -f "$PHP_FILE" ]
 then
-        if check_md5 "${PHP_FILE}"
-        then
-                echo "Bundling PHP v${PHP_VERSION}" | indent
-                echo ${PHP_URL} | indent
-                curl -s -S -o ${PHP_FILE} -L -m 300 --connect-timeout 60 ${PHP_URL}
-        else
-                echo "Downloaded PHP v${PHP_VERSION}" | indent
-        fi
+        echo "Using Cached PHP v${PHP_VERSION}" | indent
 else
         echo "Bundling PHP v${PHP_VERSION}" | indent
         echo ${PHP_URL} | indent
         curl -s -S -o ${PHP_FILE} -L -m 300 --connect-timeout 60 ${PHP_URL}
 fi
-
+echo ${BUILD_DIR}
 mkdir -p ${BUILD_DIR}/vendor/php
 tar xzf ${PHP_FILE} -C ${BUILD_DIR}/vendor/php
+export PATH="${PATH}:${BUILD_DIR}/vendor/php/bin"
 export PATH="${PATH}:${BUILD_DIR}/vendor/php/bin"
 
 ## Lighttpd
