@@ -3,7 +3,7 @@
 BUILD_DIR="$1"
 
 if [ -d "$BUILD_DIR/public" ]; then
-  echo 'lighttpd'
+  echo 'laravel4'
   exit 0
 fi
 

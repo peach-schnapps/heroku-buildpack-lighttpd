@@ -21,6 +21,7 @@ function check_md5() {
 
 function download_url() {
         TARGET_URL="$1"
+        FILE="$2"
         curl -s -S -O -L -m 300 --connect-timeout 60 "$TARGET_URL"
 }
 
@@ -40,7 +41,7 @@ then
         then
                 echo "Bundling PHP v${PHP_VERSION}" | indent
                 echo ${PHP_URL} | indent
-                download_url ${PHP_URL}
+                curl -s -S -o ${PHP_FILE} -L -m 300 --connect-timeout 60 ${PHP_URL}
         else
                 echo "Downloaded PHP v${PHP_VERSION}" | indent
         fi
