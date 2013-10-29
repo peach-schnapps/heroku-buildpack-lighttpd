@@ -2,16 +2,37 @@
 
 set -e
 
-indent() {
-  sed -u 's/^/       /'
+## Local Functions
+function indent() {
+        c='s/^/       /'
+        case $(uname) in
+                Darwin) sed -l "$c";;
+                *)      sed -u "$c";;
+        esac
+}
+
+function check_md5() {
+        SUMS_FILE="${BUNDLE_DIR}/${MANIFEST_FILE}"
+        TARGET="$1"
+        SUM=`cat "${SUMS_FILE}" | grep "${TARGET}" | cut -d ' ' -f 1`
+        OUTPUT=`md5sum ${BUNDLE_DIR}/${TARGET} | cut -d ' ' -f 1`
+        ! [ "$SUM" = "$OUTPUT" ]
+}
+
+function download_url() {
+        TARGET_URL="$1"
+        curl -s -S -O -L -m 300 --connect-timeout 60 "$TARGET_URL"
 }
 
 BUILD_DIR="$1"
 CACHE_DIR="$2"
+
+## PHP
 PHP_VERSION=5.4.17
+PHP_REGION="us2"
+PHP_FILE="php-${PHP_VERSION}.tar.gz"
+PHP_URL="http://$PHP_REGION.php.net/get/$PHP_FILE/from/$PHP_REGION.php.net/mirror"
 
-
-# PHP
 echo "-----> Installing PHP version $PHP_VERSION"
 if [ -f "$PHP_FILE" ]
 then
@@ -21,7 +42,7 @@ then
                 echo ${PHP_URL} | indent
                 download_url ${PHP_URL}
         else
-                echo "Using cached PHP v${PHP_VERSION}" | indent
+                echo "Downloaded PHP v${PHP_VERSION}" | indent
         fi
 else
         echo "Bundling PHP v${PHP_VERSION}" | indent
@@ -32,6 +53,8 @@ fi
 mkdir -p ${BUILD_DIR}/vendor/php
 tar xzf ${PHP_FILE} -C ${BUILD_DIR}/vendor/php
 export PATH="${PATH}:${BUILD_DIR}/vendor/php/bin"
+
+## Lighttpd
 
 LIGHTTPD_VERSION='1.4.32'
 LIGHTTPD_VERSION_MAJOR="$(echo $LIGHTTPD_VERSION | cut -d '.' -f 1)"
