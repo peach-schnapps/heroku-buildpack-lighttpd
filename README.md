@@ -1,4 +1,4 @@
-Heroku buildpack: lighttpd
+Heroku buildpack: lighttpd + php (Laravel 4 Flavour)
 ==========================
 
 This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks)
@@ -15,11 +15,12 @@ Example usage:
     $ ls
     public_html/
 
-    $ heroku create --stack cedar --buildpack git://github.com/tt/heroku-buildpack-lighttpd.git
+    $ heroku create --stack cedar --buildpack git://github.com/peach-schnapps/heroku-buildpack-lighttpd.git
 
     $ git push heroku master
     ...
     -----> Fetching custom git buildpack... done
+    -----> Installing PHP version $PHP_VERSION
     -----> lighttpd app detected
     -----> Bundling lighttpd version 1.4.32
            Downloading source... done
@@ -29,10 +30,10 @@ Example usage:
 
 You can also add it to upcoming builds of an existing application:
 
-    $ heroku config:add BUILDPACK_URL=git://github.com/tt/heroku-buildpack-lighttpd.git
+    $ heroku config:add BUILDPACK_URL=git://github.com/peach-schnapps/heroku-buildpack-lighttpd.git
 
 The buildpack will detect your app as lighttpd if it has the directory
-`public_html` in the root.
+`public` in the root (as laravel does)
 
 You can provide a `lighttpd.conf` file to alter the behavior of lighttpd.
 
